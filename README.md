@@ -45,5 +45,4 @@ The code of neural net-work part takes is modified from [Growing Neural Cellular
 
 The picture below shows the process of how this repo works.
 
-
-
+<img src="https://github.com/midstreeeam/3d-voxel-gen/blob/main/images/process.png?raw=true" alt="window" style="zoom:70%;" />
