@@ -1,0 +1,8 @@
+coloredlogs==15.0.1
+matplotlib==3.5.1
+numpy==1.21.6
+Pillow==9.1.0
+setuptools==49.2.1
+tensorflow==2.8.0
+tf_nightly==2.9.0.dev20220314
+tqdm==4.62.3
