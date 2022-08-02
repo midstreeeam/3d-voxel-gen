@@ -1,5 +1,5 @@
 from tensorflow import pad
-from tensorflow import cast, float32
+from tensorflow import cast
 
 def pad_tgt(p,tgt):
 # tgt -- target model, stored in numpy array

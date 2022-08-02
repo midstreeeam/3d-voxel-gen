@@ -1,11 +1,11 @@
-import math
+# old script
+
+
 import random
-import sys
 import os
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/../')
 import numpy as np
 import matplotlib.pylab as plt
-from pyvox.parser import VoxParser
+from voxio.pyvox.parser import VoxParser
 import json
 from tensorflow import pad
 from tensorflow import cast, float32

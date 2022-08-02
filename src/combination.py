@@ -11,9 +11,6 @@ from voxio.pyvox.models import Vox
 from voxio.pyvox.parser import VoxParser
 
 
-# from tensorflow import pad
-# from tensorflow import cast, float32
-
 
 imgcount = len(os.listdir('img'))
 print(imgcount)
