@@ -1,44 +1,17 @@
-import math
-import random
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/../')
-import numpy as np
-import matplotlib.pylab as plt
-from pyvox.parser import VoxParser
 import json
-from tensorflow import pad
-from tensorflow import cast, float32
+import os
+
+import numpy as np
 from PIL import Image
-import copy
+
+from helper import plot_3d
+from helper_tensor import cast,pad_tgt,float32
+from voxio.pyvox.parser import VoxParser
+
 
 p = 32
 imgcount = len(os.listdir('img'))
 print(imgcount)
-
-def pad_tgt(tgt):
-# tgt -- target model, stored in numpy array
-    px = (p - tgt.shape[0]) // 2
-    py = (p - tgt.shape[1]) // 2
-    pz = (p - tgt.shape[2]) // 2
-    return pad(tgt, [
-        (px, px + (p - tgt.shape[0] - 2 * px)), 
-        (py, py + (p - tgt.shape[1] - 2 * py)), 
-        (pz, pz + (p - tgt.shape[2] - 2 * pz)), (0, 0)])
-
-
-def plot_3d(arr):
-    global imgcount
-    imgcount+=1
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    #u = np.moveaxis(arr, (0, 1), (1, 2))
-    u=arr
-    m = ax.voxels((u[:, :, :, 3]), facecolors=np.clip(u[:, :, :, :4], 0, 1))
-    # plt.savefig("img/{}.jpg".format(imgcount),dpi=900,bbox_inches='tight',pad_inches=0)
-    plt.show()
-
-# coloredlogs.install(level='DEBUG')
 
 
 m = VoxParser('voxio/vox/cat3_head.vox').parse()

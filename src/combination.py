@@ -1,17 +1,16 @@
-import math
 import random
-import sys
 import os
 
-from matplotlib.pyplot import plot
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/../')
-from pyvox.models import Vox
 import numpy as np
 import matplotlib.pylab as plt
-from pyvox.parser import VoxParser
-import json
 from PIL import Image
 from copy import deepcopy
+
+from matplotlib.pyplot import plot
+from voxio.pyvox.models import Vox
+from voxio.pyvox.parser import VoxParser
+
+
 # from tensorflow import pad
 # from tensorflow import cast, float32
 
