@@ -31,7 +31,7 @@ def vox2json(vox_path,palette_path,json_name):
         data = json.dumps(arr.tolist())
         f.write(data)
     
-    print('done')
+    print('transfer done')
 
 
 def viz_json(json_name):
