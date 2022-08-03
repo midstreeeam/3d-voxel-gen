@@ -1,80 +1,35 @@
-import random
-import os
 
 import numpy as np
-import matplotlib.pylab as plt
 from PIL import Image
 from copy import deepcopy
 
-from matplotlib.pyplot import plot
+
 from voxio.pyvox.models import Vox
 from voxio.pyvox.parser import VoxParser
+from helper import plot_3d,save_3d,single_color_mute
+
+from config import CAT_PATH, FILTER_PATH,PALETTE_PATH
 
 
-
-imgcount = len(os.listdir('img'))
-print(imgcount)
-
-def save_3d(arr):
-    global imgcount
-    imgcount+=1
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.voxels((arr[:, :, :, 3]), facecolors=np.clip(arr[:, :, :, :4], 0, 1))
-    plt.savefig("img/{}.jpg".format(imgcount),dpi=200,bbox_inches='tight',pad_inches=0)
-    plt.close()
-
-
-def single_color_mute(color):
-    [r,g,b,l]=color[0],color[1],color[2],color[3]
-    if r>10 and r<240:
-        r=r+random.randint(-6,6)
-    if g>10 and g<245:
-        g=g+random.randint(-6,6)
-    if b>10 and b<245:
-        b=b+random.randint(-6,6)
-
-    ans=[r/255,g/255,b/255,l]
-
-    return deepcopy(ans)
-
-
-class pet():
+class Cat():
     
-    def __init__(self,name,vox_path) -> None:
-        # self.img_path=vox_path+'/'+name+'.png'
-        self.img_path='voxio/vox/cat_color_mod/cat2/cat2-c2.png'
-        vox_path=vox_path+'/divided/'+name+'.vox'
+    def __init__(self,name,palette_name='cat2') -> None:
+
+        vox_path=CAT_PATH+name+'.vox'
         
         vox_path0=vox_path[:-4]+'-0'+vox_path[-4:]
         vox_path1=vox_path[:-4]+'-1'+vox_path[-4:]
         vox_path2=vox_path[:-4]+'-2'+vox_path[-4:]
         vox_path3=vox_path[:-4]+'-3'+vox_path[-4:]
         vox_path4=vox_path[:-4]+'-4'+vox_path[-4:]
+
         self.vox_path=[vox_path0,vox_path1,vox_path2,vox_path3,vox_path4]
+        self.palette_path=PALETTE_PATH+palette_name+'.png'
 
     pass
-    
 
-def plot_3d(arr):
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    u = np.moveaxis(arr, (0, 1), (0, 1))
-    m = ax.voxels((u[:, :, :, 3] > 0.1), 
-                  facecolors=np.clip(u[:, :, :, :4], 0, 1))
-    plt.show()
-
-
-def color_normalize_index(m:Vox):
-    return 0
-    c_min=255
-    for i in m.models[0][1]:
-        if i.c<c_min:
-            c_min=i.c
-    return c_min
-
-def read_filter():
-    path='voxio/vox/filter/filter1.vox'
+def read_filter(name):
+    path=FILTER_PATH+name+'.vox'
     m = VoxParser(path).parse()
     color=[0,0,1,1]
     arr = np.zeros((31,31,31,4))
@@ -86,29 +41,29 @@ def read_filter():
     return arr
 
 
-def vox_to_list(pet:pet,vox_index,filter=None):
+def vox_to_list(pet:Cat,vox_index,filter=None):
     vox_path=pet.vox_path[vox_index]
-    img_path=pet.img_path
+    palette_path=pet.palette_path
     m = VoxParser(vox_path).parse()
-    print(vox_path)
     arr = np.zeros((31,31,31,4))
 
-    I = Image.open(img_path)
+    I = Image.open(palette_path)
     color = np.array(I)
-    color_index=color_normalize_index(m)
 
     for i in m.models[0][1]:
         x=i.x
         y=i.y
         z=i.z
-        c=i.c-color_index
-        # arr[x,y,z]=color[0,c-1]/255
+        c=i.c
+
         arr[x,y,z]=single_color_mute(color[0,c-1])
         if filter is not None:
             if filter[x,y,z,3]==1:
                 arr[x,y,z]=color[0,34]/255
-        new_color=arr[x,y,z]/0.9
-        arr[x,y,z]=[new_color[0],new_color[1],new_color[2],1]
+
+        # color adjust, make the whole thing brighter or darker
+        # new_color=arr[x,y,z]/0.9
+        # arr[x,y,z]=[new_color[0],new_color[1],new_color[2],1]
 
     return arr
 
@@ -142,14 +97,14 @@ def clean_limb_body_gap(arr:np.ndarray):
     return new_arr
 
 
-def read_files(filter=None):
+def read_files(filter=None,palette_name='cat2'):
 
-    cat1=pet('cat1','voxio/vox/cat_color_mod/cat1')
-    cat2=pet('cat2','voxio/vox/cat_color_mod/cat2')
-    cat3=pet('cat3','voxio/vox/cat_color_mod/cat3')
+    cat1=Cat('cat1',palette_name)
+    cat2=Cat('cat2',palette_name)
+    cat3=Cat('cat3',palette_name)
     cats=[cat1,cat2,cat3]
 
-    arr=np.zeros((len(cats),5,31,31,31,4))
+    arr=np.zeros((len(cats),5,31,31,31,4)) # examle: [cat1,tail,x,y,z,color]
     for i in range(arr.shape[0]):
         for j in range(arr.shape[1]):
             arr[i][j]=vox_to_list(cats[i],j,filter)
@@ -195,33 +150,18 @@ def comb_2(arr:np.ndarray):
 
     return hy4
 
+
 def run_combination():
 
-    f=read_filter()
+    f=read_filter('filter1')
+    arr=read_files(filter=f)
 
-    arr=read_files(f)
+    hy=comb_1(arr)
+    print('comb_1 hybrid_done')
+    print(hy.shape)
 
-    '''
-    0: tail
-    1: body
-    2: limbs
-    3: head
-    4: ears
-    '''
-
-    tails=arr[:,0,:,:,:,:]
-    bodies=arr[:,1,:,:,:,:]
-    limbs=arr[:,2,:,:,:,:]
-    heads=arr[:,3,:,:,:,:]
-    earsis=arr[:,4,:,:,:,:]
-
-
-    # hy=comb_1(arr)
-    # print('comb_1 hybrid_done')
-    # print(hy.shape)
-
-    # for i in hy:
-    #     save_3d(i)
+    for i in hy:
+        save_3d(i)
 
     hy=comb_2(arr)
     print('comb_2 hybrid_done')
@@ -230,13 +170,12 @@ def run_combination():
     for i in hy:
         save_3d(i)
 
-# run_combination()
+run_combination()
 
-# t=stack_two(arr[0][2],arr[2][1])
-# t=clean_limb_body_gap(t)
-
-# plot_3d(arr[1][3])
-# plot_3d(arr[1][2])
-
-arr= read_filter()
-plot_3d(arr)
+# f=read_filter()
+# arr=read_files(f)
+# tails=arr[:,0,:,:,:,:]
+# bodies=arr[:,1,:,:,:,:]
+# limbs=arr[:,2,:,:,:,:]
+# heads=arr[:,3,:,:,:,:]
+# earsis=arr[:,4,:,:,:,:]
