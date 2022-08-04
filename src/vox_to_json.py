@@ -26,6 +26,7 @@ def vox2json(vox_path,palette_path,json_name):
         z=i.z
         c=i.c
         arr[x,y,z]=color[0,c-1]/255
+        # arr[x,y,z]=[0,0,1,1]
 
     with open('data/json/'+json_name+'.json','w') as f:
         data = json.dumps(arr.tolist())
@@ -42,5 +43,5 @@ def viz_json(json_name):
     plot_3d(arr)
 
 
-# vox2json('data/vox/cat/cat1-3.vox','data/palette/cat1.png','cat1-3')
-# viz_json('cat1-3')
+# vox2json('data/vox/filter/filter_piece.vox','data/palette/cat1.png','filter_piece')
+# viz_json('filter_piece')
