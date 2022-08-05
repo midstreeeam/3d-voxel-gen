@@ -1,8 +1,11 @@
+from operator import methodcaller
 import matplotlib.pylab as plt
 import numpy as np
 import random
 from copy import deepcopy
 import os
+
+from voxio.pyvox.models import Vox
 
 def plot_3d(arr):
     fig = plt.figure()
@@ -34,3 +37,23 @@ def single_color_mute(color,mute_range=5):
     ans=[r/255,g/255,b/255,l]
 
     return deepcopy(ans)
+
+def model_to_list(model:Vox,palette_arr:np.ndarray,color_mute=False,single_color=None):
+
+    arr = np.zeros((31,31,31,4))
+    color = palette_arr
+
+    for i in model.models[0][1]:
+        x=i.x
+        y=i.y
+        z=i.z
+        c=i.c
+
+        if single_color is not None:
+            arr[x,y,z]=single_color
+        elif color_mute:
+            arr[x,y,z]=single_color_mute(color[0,c-1])
+        else:
+            arr[x,y,z]=color[0,c-1]/255
+
+    return arr

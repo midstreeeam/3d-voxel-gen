@@ -2,11 +2,10 @@
 import numpy as np
 from PIL import Image
 from copy import deepcopy
+from filter import Filter
 
-
-from voxio.pyvox.models import Vox
 from voxio.pyvox.parser import VoxParser
-from helper import plot_3d,save_3d,single_color_mute
+from helper import model_to_list, plot_3d,save_3d,single_color_mute
 
 from config import CAT_PATH, FILTER_PATH,PALETTE_PATH
 
@@ -28,42 +27,20 @@ class Cat():
 
     pass
 
-def read_filter(name):
-    path=FILTER_PATH+name+'.vox'
-    m = VoxParser(path).parse()
-    color=[0,0,1,1]
-    arr = np.zeros((31,31,31,4))
-    for i in m.models[0][1]:
-        x=i.x
-        y=i.y
-        z=i.z
-        arr[x,y,z]=color
-    return arr
 
-
-def vox_to_list(pet:Cat,vox_index,filter=None):
+def vox_to_list(pet:Cat,vox_index,filter:Filter=None):
     vox_path=pet.vox_path[vox_index]
     palette_path=pet.palette_path
     m = VoxParser(vox_path).parse()
-    arr = np.zeros((31,31,31,4))
 
     I = Image.open(palette_path)
     color = np.array(I)
+    filter_color=color[0,34]/255
 
-    for i in m.models[0][1]:
-        x=i.x
-        y=i.y
-        z=i.z
-        c=i.c
-
-        arr[x,y,z]=single_color_mute(color[0,c-1])
-        if filter is not None:
-            if filter[x,y,z,3]==1:
-                arr[x,y,z]=color[0,34]/255
-
-        # color adjust, make the whole thing brighter or darker
-        # new_color=arr[x,y,z]/0.9
-        # arr[x,y,z]=[new_color[0],new_color[1],new_color[2],1]
+    arr=model_to_list(m,color,color_mute=True)
+    if filter is not None:
+        # filter.apply_to(arr,filter_color=filter_color)
+        filter.apply_to(arr)
 
     return arr
 
@@ -153,22 +130,22 @@ def comb_2(arr:np.ndarray):
 
 def run_combination():
 
-    f=read_filter('filter1')
-    arr=read_files(filter=f)
+    f=Filter('filter1')
+    arr=read_files(f)
 
     hy=comb_1(arr)
     print('comb_1 hybrid_done')
     print(hy.shape)
 
     for i in hy:
-        save_3d(i)
+        plot_3d(i)
 
-    hy=comb_2(arr)
-    print('comb_2 hybrid_done')
-    print(hy.shape)
+    # hy=comb_2(arr)
+    # print('comb_2 hybrid_done')
+    # print(hy.shape)
 
-    for i in hy:
-        save_3d(i)
+    # for i in hy:
+    #     save_3d(i)
 
 run_combination()
 

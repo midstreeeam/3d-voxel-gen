@@ -1,4 +1,7 @@
-# from voxio.pyvox.parser import VoxParser
+from filter import Filter
+from helper import plot_3d
+from vox_to_json import viz_vox
 
-# m = VoxParser('data/vox/cat/cat1-2.vox').parse()
-# print(m)
+arr=viz_vox('data/vox/cat/cat2.vox','data/palette/cat2.png')
+f=Filter('filter_rand70')
+plot_3d(f.apply_to(arr,filter_effect='lighter'))

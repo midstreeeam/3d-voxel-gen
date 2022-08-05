@@ -10,7 +10,8 @@ def json2vox(json_path,output_path):
         data=json.loads(f.read())
     a=np.array(data)
 
-    arr=a[:,:,:,3]
+    # cut if the size is not 31x31x31
+    arr=a[:31,:31,:31,3]
     bool_arr=np.zeros(arr.shape,dtype=bool)
 
     # nested 'for' need to be improved
@@ -22,7 +23,8 @@ def json2vox(json_path,output_path):
                 else:
                     bool_arr[x,y,z]=True
 
+
     vox = Vox.from_dense(bool_arr)
     VoxWriter(output_path, vox).write()
 
-json2vox('data/json/filter_rand20.json','test.vox')
+json2vox('data/json/filter_rand70.json','data/vox/filter/filter_rand70.vox')
