@@ -20,7 +20,8 @@ def save_3d(arr,dpi=200):
     imgcount=len(os.listdir('img'))+1
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    ax.voxels((arr[:, :, :, 3]), facecolors=np.clip(arr[:, :, :, :4], 0, 1))
+    u = np.moveaxis(arr, (0, 1), (0, 1))
+    ax.voxels((u[:, :, :, 3] > 0.1), facecolors=np.clip(u[:, :, :, :4], 0, 1))
     plt.savefig("img/{}.jpg".format(imgcount),dpi=dpi,bbox_inches='tight',pad_inches=0)
     plt.close()
 

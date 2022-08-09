@@ -5,10 +5,10 @@ from PIL import Image
 from voxio.pyvox.parser import VoxParser
 from helper import plot_3d,model_to_list
 
-def viz_vox(vox_path,palette_path):
+def viz_vox(vox_path,palette_path,color_mute=False):
     m = VoxParser(vox_path).parse()
     color = np.array(Image.open(palette_path))
-    arr=model_to_list(m,color,color_mute=False)
+    arr=model_to_list(m,color,color_mute=color_mute)
     plot_3d(arr)
     return arr
 
