@@ -12,6 +12,13 @@ def plot_3d(arr):
     ax = fig.add_subplot(projection='3d')
     u = np.moveaxis(arr, (0, 1), (0, 1))
     m = ax.voxels((u[:, :, :, 3] > 0.1), facecolors=np.clip(u[:, :, :, :4], 0, 1))
+
+    ax.grid(False)#默认True，风格线。
+    ax.set_xticks([])#不显示x坐标轴
+    ax.set_yticks([])#不显示y坐标轴
+    ax.set_zticks([])#不显示z坐标轴
+    plt.axis('off')#关闭所有坐标轴
+
     plt.show()
     plt.close()
 
@@ -22,6 +29,13 @@ def save_3d(arr,dpi=200):
     ax = fig.add_subplot(projection='3d')
     u = np.moveaxis(arr, (0, 1), (0, 1))
     ax.voxels((u[:, :, :, 3] > 0.1), facecolors=np.clip(u[:, :, :, :4], 0, 1))
+
+    ax.grid(False)#默认True，风格线。
+    ax.set_xticks([])#不显示x坐标轴
+    ax.set_yticks([])#不显示y坐标轴
+    ax.set_zticks([])#不显示z坐标轴
+    plt.axis('off')#关闭所有坐标轴
+
     plt.savefig("img/{}.jpg".format(imgcount),dpi=dpi,bbox_inches='tight',pad_inches=0)
     plt.close()
 

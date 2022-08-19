@@ -10,9 +10,9 @@ def imgs2gif(imgPaths, saveName, duration=None, loop=0, fps=None):
 
 
 p_lis = []
-imgcount = len(os.listdir('img'))
-for i in range(3,600,5):
-  p_lis.append('./img/'+str(i)+'.jpg')
+imgcount = len(os.listdir('img/color_mu_220615/'))
+for i in range(3,imgcount,7):
+  p_lis.append('./img/color_mu_220615/'+str(i)+'.jpg')
 
 random.shuffle(p_lis)
 

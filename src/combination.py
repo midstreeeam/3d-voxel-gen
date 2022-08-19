@@ -74,7 +74,7 @@ def clean_limb_body_gap(arr:np.ndarray):
     return new_arr
 
 
-def read_files(filter=None,palette_name='cat2'):
+def read_files(filter=None,palette_name='cat2-c3'):
 
     cat1=Cat('cat1',palette_name)
     cat2=Cat('cat2',palette_name)
@@ -138,14 +138,14 @@ def run_combination():
     print(hy.shape)
 
     for i in hy:
-        plot_3d(i)
+        save_3d(i)
 
-    # hy=comb_2(arr)
-    # print('comb_2 hybrid_done')
-    # print(hy.shape)
+    hy=comb_2(arr)
+    print('comb_2 hybrid_done')
+    print(hy.shape)
 
-    # for i in hy:
-    #     save_3d(i)
+    for i in hy:
+        save_3d(i)
 
 run_combination()
 
