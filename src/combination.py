@@ -35,12 +35,12 @@ def vox_to_list(pet:Cat,vox_index,filter:Filter=None):
 
     I = Image.open(palette_path)
     color = np.array(I)
-    filter_color=color[0,34]/255
+    filter_color=color[0,254]/255
 
     arr=model_to_list(m,color,color_mute=True)
     if filter is not None:
         # filter.apply_to(arr,filter_color=filter_color)
-        filter.apply_to(arr)
+        filter.apply_to(arr,filter_color=filter_color)
 
     return arr
 
@@ -74,7 +74,7 @@ def clean_limb_body_gap(arr:np.ndarray):
     return new_arr
 
 
-def read_files(filter=None,palette_name='cat2-c3'):
+def read_files(filter=None,palette_name='light-darkedge'):
 
     cat1=Cat('cat1',palette_name)
     cat2=Cat('cat2',palette_name)
@@ -130,7 +130,7 @@ def comb_2(arr:np.ndarray):
 
 def run_combination():
 
-    f=Filter('filter1')
+    f=Filter('edge')
     arr=read_files(f)
 
     hy=comb_1(arr)
