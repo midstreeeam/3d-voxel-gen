@@ -13,7 +13,7 @@ from struct import unpack_from, calcsize
 # viz_vox('data/vox/cat/cat2.vox','data/palette/cat2.png')
 # viz_vox('data/vox/cat/cat3.vox','data/palette/cat3.png')
 
-viz_vox('data/vox/filter/filter1.vox','data/palette/black_wight.png')
+viz_vox('data/vox/cat/cat1.vox','data/palette/cat2-mod2.png')
 
 # m = VoxParser('data/vox/cat/cat1.vox').parse()
 

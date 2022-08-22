@@ -5,7 +5,7 @@ from copy import deepcopy
 from filter import Filter
 
 from voxio.pyvox.parser import VoxParser
-from helper import model_to_list, plot_3d,save_3d,single_color_mute
+from helper import model_to_list, plot_3d,save_3d,single_color_mute,save_vox
 
 from config import CAT_PATH, FILTER_PATH,PALETTE_PATH
 
@@ -37,7 +37,7 @@ def vox_to_list(pet:Cat,vox_index,filter:Filter=None):
     color = np.array(I)
     filter_color=color[0,254]/255
 
-    arr=model_to_list(m,color,color_mute=True)
+    arr=model_to_list(m,color,color_mute=False)
     if filter is not None:
         # filter.apply_to(arr,filter_color=filter_color)
         filter.apply_to(arr,filter_color=filter_color)
@@ -74,7 +74,7 @@ def clean_limb_body_gap(arr:np.ndarray):
     return new_arr
 
 
-def read_files(filter=None,palette_name='light-darkedge'):
+def read_files(filter=None,palette_name='cat2-c3'):
 
     cat1=Cat('cat1',palette_name)
     cat2=Cat('cat2',palette_name)
@@ -131,13 +131,15 @@ def comb_2(arr:np.ndarray):
 def run_combination():
 
     f=Filter('edge')
-    arr=read_files(f)
+    pal_path='data/palette/cat3.png'
+    arr=read_files(f,palette_name='cat3')
 
     hy=comb_1(arr)
     print('comb_1 hybrid_done')
     print(hy.shape)
 
     for i in hy:
+        save_vox(i,pal_path)
         save_3d(i)
 
     hy=comb_2(arr)
@@ -145,6 +147,7 @@ def run_combination():
     print(hy.shape)
 
     for i in hy:
+        save_vox(i,pal_path)
         save_3d(i)
 
 run_combination()

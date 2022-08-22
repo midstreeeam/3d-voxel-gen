@@ -6,6 +6,7 @@ from copy import deepcopy
 import os
 
 from voxio.pyvox.models import Vox
+from io2.voxio import Voxio
 
 def plot_3d(arr):
     fig = plt.figure()
@@ -39,6 +40,11 @@ def save_3d(arr,dpi=200):
     plt.savefig("img/{}.jpg".format(imgcount),dpi=dpi,bbox_inches='tight',pad_inches=0)
     plt.close()
 
+def save_vox(vox,palette_path):
+    '''save vox under the folder 'gen', with number as the name of the figure '''
+    imgcount=len(os.listdir('gen'))+1
+    Voxio.write_list_to_vox(vox,"gen/{}.vox".format(imgcount),palette_path)
+    
 
 def single_color_mute(color,mute_range=5):
     [r,g,b,l]=color[0],color[1],color[2],color[3]
