@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 
 from voxio.pyvox.parser import VoxParser
-from helper import plot_3d,model_to_list
+from helper import plot_3d,model_to_list, save_vox
 
 def viz_vox(vox_path,palette_path,color_mute=False):
     m = VoxParser(vox_path).parse()
@@ -52,4 +52,5 @@ def viz_json(json_name):
 
 # vox2json('data/vox/filter/filter_piece.vox','data/palette/cat1.png','filter_piece')
 # viz_json('filter_piece')
-# viz_vox('data/vox/cat/cat2.vox','data/palette/cat2.png')
+arr = viz_vox('data/vox/cat/cat3.vox','data/palette/cat3.png')
+save_vox(arr,'data/palette/cat3.png')

@@ -3,11 +3,9 @@ from PIL import Image
 from copy import deepcopy
 from filter import Filter
 
-from voxio.pyvox.parser import VoxParser
-from helper import model_to_list, plot_3d,save_3d,single_color_mute,save_vox
+from PyVox.pyvox.voxio import *
 
-from config import *
-
+from config import CAT_PATH, FILTER_PATH,PALETTE_PATH
 
 class Cat():
     
@@ -23,6 +21,7 @@ class Cat():
 
         self.vox_path=[vox_path0,vox_path1,vox_path2,vox_path3,vox_path4]
         self.palette_path=PALETTE_PATH+palette_name+'.png'
+        print(self.palette_path)
 
     pass
 
@@ -30,16 +29,17 @@ class Cat():
 def vox_to_list(pet:Cat,vox_index,filter:Filter=None):
     vox_path=pet.vox_path[vox_index]
     palette_path=pet.palette_path
-    m = VoxParser(vox_path).parse()
+    m=get_vox(vox_path)
 
     I = Image.open(palette_path)
-    color = np.array(I)
-    filter_color=color[0,254]/255
+    color = np.array(I)[0]
+    m.palettes.append(color)
+    arr=m.to_list(palette_index=-1)
+    filter_color=color[254]/255
 
-    arr=model_to_list(m,color,color_mute=False)
     if filter is not None:
         # filter.apply_to(arr,filter_color=filter_color)
-        filter.apply_to(arr,filter_color=filter_color)
+        filter.apply_to(arr)
 
     return arr
 
@@ -132,15 +132,13 @@ def run_combination():
     f=Filter('edge')
     pal_path='data/palette/light.png'
     arr=read_files(f,palette_name='light')
-    print(arr.shape)
 
-    # hy=comb_1(arr)
-    # print('comb_1 hybrid_done')
-    # print(hy.shape)
+    hy=comb_1(arr)
+    print('comb_1 hybrid_done')
+    print(hy.shape)
 
-    # for i in hy:
-    #     save_vox(i,pal_path)
-    #     save_3d(i)
+    for i in hy:
+        plot_3d(i)
 
     # hy=comb_2(arr)
     # print('comb_2 hybrid_done')
